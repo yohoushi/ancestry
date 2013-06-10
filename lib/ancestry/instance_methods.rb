@@ -89,16 +89,16 @@ module Ancestry
       self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where  ancestor_conditions
     end
 
-    def path_ids
+    def self_or_ancestor_ids
       ancestor_ids + [id]
     end
 
-    def path_conditions
-      {primary_key_with_table => path_ids}
+    def self_or_ancestor_conditions
+      {primary_key_with_table => self_or_ancestor_ids}
     end
 
-    def path depth_options = {}
-      self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where  path_conditions
+    def self_or_ancestors depth_options = {}
+      self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where  self_or_ancestor_conditions
     end
 
     def depth

@@ -101,8 +101,8 @@ class HasAncestryTreeTest < ActiveSupport::TestCase
         # Ancestors assertions
         assert_equal [], lvl0_node.ancestor_ids
         assert_equal [], lvl0_node.ancestors
-        assert_equal [lvl0_node.id], lvl0_node.path_ids
-        assert_equal [lvl0_node], lvl0_node.path
+        assert_equal [lvl0_node.id], lvl0_node.self_or_ancestor_ids
+        assert_equal [lvl0_node], lvl0_node.self_or_ancestors
         assert_equal 0, lvl0_node.depth
         # Parent assertions
         assert_equal nil, lvl0_node.parent_id
@@ -134,8 +134,8 @@ class HasAncestryTreeTest < ActiveSupport::TestCase
           # Ancestors assertions
           assert_equal [lvl0_node.id], lvl1_node.ancestor_ids
           assert_equal [lvl0_node], lvl1_node.ancestors
-          assert_equal [lvl0_node.id, lvl1_node.id], lvl1_node.path_ids
-          assert_equal [lvl0_node, lvl1_node], lvl1_node.path
+          assert_equal [lvl0_node.id, lvl1_node.id], lvl1_node.self_or_ancestor_ids
+          assert_equal [lvl0_node, lvl1_node], lvl1_node.self_or_ancestors
           assert_equal 1, lvl1_node.depth
           # Parent assertions
           assert_equal lvl0_node.id, lvl1_node.parent_id
@@ -167,8 +167,8 @@ class HasAncestryTreeTest < ActiveSupport::TestCase
             # Ancestors assertions
             assert_equal [lvl0_node.id, lvl1_node.id], lvl2_node.ancestor_ids
             assert_equal [lvl0_node, lvl1_node], lvl2_node.ancestors
-            assert_equal [lvl0_node.id, lvl1_node.id, lvl2_node.id], lvl2_node.path_ids
-            assert_equal [lvl0_node, lvl1_node, lvl2_node], lvl2_node.path
+            assert_equal [lvl0_node.id, lvl1_node.id, lvl2_node.id], lvl2_node.self_or_ancestor_ids
+            assert_equal [lvl0_node, lvl1_node, lvl2_node], lvl2_node.self_or_ancestors
             assert_equal 2, lvl2_node.depth
             # Parent assertions
             assert_equal lvl1_node.id, lvl2_node.parent_id
@@ -629,7 +629,7 @@ class HasAncestryTreeTest < ActiveSupport::TestCase
     end
   end
 
-  def test_path_with_depth_constraints
+  def test_self_or_ancestors_with_depth_constraints
     AncestryTestDatabase.with_model :cache_depth => true do |model|
       node1 = model.create!
       node2 = node1.children.create!
@@ -638,11 +638,11 @@ class HasAncestryTreeTest < ActiveSupport::TestCase
       node5 = node4.children.create!
       leaf  = node5.children.create!
 
-      assert_equal [node1, node2, node3],        leaf.path(:before_depth => -2)
-      assert_equal [node1, node2, node3, node4], leaf.path(:to_depth => -2)
-      assert_equal [node4],                      leaf.path(:at_depth => -2)
-      assert_equal [node4, node5, leaf],         leaf.path(:from_depth => -2)
-      assert_equal [node5, leaf],                leaf.path(:after_depth => -2)
+      assert_equal [node1, node2, node3],        leaf.self_or_ancestors(:before_depth => -2)
+      assert_equal [node1, node2, node3, node4], leaf.self_or_ancestors(:to_depth => -2)
+      assert_equal [node4],                      leaf.self_or_ancestors(:at_depth => -2)
+      assert_equal [node4, node5, leaf],         leaf.self_or_ancestors(:from_depth => -2)
+      assert_equal [node5, leaf],                leaf.self_or_ancestors(:after_depth => -2)
     end
   end
 
@@ -674,7 +674,7 @@ class HasAncestryTreeTest < ActiveSupport::TestCase
       assert_equal [node2.id, node3.id, node4.id, node5.id], node1.descendants.map(&:id)
       assert_equal [node1.id, node2.id, node3.id, node4.id, node5.id], node1.subtree.map(&:id)
       assert_equal [node1.id, node2.id, node3.id, node4.id], node5.ancestors.map(&:id)
-      assert_equal [node1.id, node2.id, node3.id, node4.id, node5.id], node5.path.map(&:id)
+      assert_equal [node1.id, node2.id, node3.id, node4.id, node5.id], node5.self_or_ancestors.map(&:id)
     end
   end
 

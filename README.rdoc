@@ -48,8 +48,8 @@ To navigate an Ancestry model, use the following methods on any instance / recor
   root?, is_root?  Returns true if the record is a root node, false otherwise
   ancestor_ids     Returns a list of ancestor ids, starting with the root id and ending with the parent id
   ancestors        Scopes the model on ancestors of the record
-  path_ids         Returns a list the path ids, starting with the root id and ending with the node's own id
-  path             Scopes model on path records of the record
+  self_or_ancestor_ids         Returns a list the path ids, starting with the root id and ending with the node's own id
+  self_or_ancestors            Scopes model on path records of the record
   children         Scopes the model on children of the record
   child_ids        Returns a list of child ids
   has_children?    Returns true if the record has any children, false otherwise

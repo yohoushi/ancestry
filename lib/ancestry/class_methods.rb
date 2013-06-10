@@ -103,7 +103,7 @@ module Ancestry
               end
             end
             # ... check that all node parents are consistent with values observed earlier
-            node.path_ids.zip([nil] + node.path_ids).each do |node_id, parent_id|
+            node.self_or_ancestor_ids.zip([nil] + node.self_or_ancestor_ids).each do |node_id, parent_id|
               parents[node_id] = parent_id unless parents.has_key? node_id
               unless parents[node_id] == parent_id
                 raise Ancestry::AncestryIntegrityException.new("Conflicting parent id found in node #{node.id}: #{parent_id || 'nil'} for node #{node_id} while expecting #{parents[node_id] || 'nil'}")
